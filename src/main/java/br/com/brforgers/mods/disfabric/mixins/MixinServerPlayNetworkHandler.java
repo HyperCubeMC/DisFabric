@@ -20,6 +20,9 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerPlayNetworkHandler.class)
 public abstract class MixinServerPlayNetworkHandler {
@@ -32,51 +35,51 @@ public abstract class MixinServerPlayNetworkHandler {
     @Shadow public abstract void disconnect(Text reason);
     @Shadow protected abstract void executeCommand(String input);
 
-//    @Inject(method = "onGameMessage", at = @At("HEAD"), cancellable = true)
-//    private void onGameMessage(ChatMessageC2SPacket packet, CallbackInfo ci){
-//        if (this.player.getClientChatVisibility() != ChatVisibility.HIDDEN) {
-//            String string = StringUtils.normalizeSpace(packet.getChatMessage());
-//            if (!string.startsWith("/")) {
-//                this.player.updateLastActionTime();
-//                Text text = new TranslatableText("chat.type.text", this.player.getDisplayName(), string);
-//                ServerChatCallback.EVENT.invoker().onServerChat(this.player, string, text);
-//            }
-//        }
-//    }
+    @Inject(method = "onGameMessage", at = @At("HEAD"), cancellable = true)
+    private void onGameMessage(ChatMessageC2SPacket packet, CallbackInfo ci) {
+        if (this.player.getClientChatVisibility() != ChatVisibility.HIDDEN) {
+            String string = StringUtils.normalizeSpace(packet.getChatMessage());
+            if (!string.startsWith("/")) {
+                this.player.updateLastActionTime();
+                Text text = new TranslatableText("chat.type.text", this.player.getDisplayName(), string);
+                ServerChatCallback.EVENT.invoker().onServerChat(this.player, string, text);
+            }
+        }
+    }
 
     /**
      * @author _
      * @reason _
      */
-    @Overwrite
-    public void onGameMessage(ChatMessageC2SPacket packet) {
-        NetworkThreadUtils.forceMainThread(packet, (ServerPlayNetworkHandler) (Object) this, this.player.getServerWorld());
-        if (this.player.getClientChatVisibility() == ChatVisibility.HIDDEN) {
-            this.sendPacket(new GameMessageS2CPacket((new TranslatableText("chat.cannotSend")).formatted(Formatting.RED), MessageType.SYSTEM, Util.NIL_UUID));
-        } else {
-            this.player.updateLastActionTime();
-            String string = StringUtils.normalizeSpace(packet.getChatMessage());
-
-            for(int i = 0; i < string.length(); ++i) {
-                if (!SharedConstants.isValidChar(string.charAt(i))) {
-                    this.disconnect(new TranslatableText("multiplayer.disconnect.illegal_characters"));
-                    return;
-                }
-            }
-
-            if (string.startsWith("/")) {
-                this.executeCommand(string);
-            } else {
-                Text text = new TranslatableText("chat.type.text", this.player.getDisplayName(), string);
-                text = ServerChatCallback.EVENT.invoker().onServerChat(this.player, string, text);
-                this.server.getPlayerManager().broadcastChatMessage(text, MessageType.CHAT, this.player.getUuid());
-            }
-
-            this.messageCooldown += 20;
-            if (this.messageCooldown > 200 && !this.server.getPlayerManager().isOperator(this.player.getGameProfile())) {
-                this.disconnect(new TranslatableText("disconnect.spam"));
-            }
-
-        }
-    }
+//   @Overwrite
+//    public void onGameMessage(ChatMessageC2SPacket packet) {
+//        NetworkThreadUtils.forceMainThread(packet, (ServerPlayNetworkHandler) (Object) this, this.player.getServerWorld());
+//        if (this.player.getClientChatVisibility() == ChatVisibility.HIDDEN) {
+//            this.sendPacket(new GameMessageS2CPacket((new TranslatableText("chat.cannotSend")).formatted(Formatting.RED), MessageType.SYSTEM, Util.NIL_UUID));
+//        } else {
+//            this.player.updateLastActionTime();
+//            String string = StringUtils.normalizeSpace(packet.getChatMessage());
+//
+//            for(int i = 0; i < string.length(); ++i) {
+//                if (!SharedConstants.isValidChar(string.charAt(i))) {
+//                    this.disconnect(new TranslatableText("multiplayer.disconnect.illegal_characters"));
+//                    return;
+//                }
+//            }
+//
+//            if (string.startsWith("/")) {
+//                this.executeCommand(string);
+//            } else {
+//                Text text = new TranslatableText("chat.type.text", this.player.getDisplayName(), string);
+//                text = ServerChatCallback.EVENT.invoker().onServerChat(this.player, string, text);
+//                this.server.getPlayerManager().broadcastChatMessage(text, MessageType.CHAT, this.player.getUuid());
+//            }
+//
+//            this.messageCooldown += 20;
+//            if (this.messageCooldown > 200 && !this.server.getPlayerManager().isOperator(this.player.getGameProfile())) {
+//                this.disconnect(new TranslatableText("disconnect.spam"));
+//            }
+//
+//        }
+//    }
 }
