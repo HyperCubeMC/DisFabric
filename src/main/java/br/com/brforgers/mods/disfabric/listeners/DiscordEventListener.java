@@ -26,12 +26,12 @@ public class DiscordEventListener extends ListenerAdapter {
 
     public void onMessageReceived(@NotNull MessageReceivedEvent e) {
         MinecraftServer server = getServer();
-        if(e.getAuthor() != e.getJDA().getSelfUser() && !e.getAuthor().isBot() && e.getChannel().getId().equals(DisFabric.config.channelId) && server != null) {
-            if(e.getMessage().getContentRaw().startsWith("!console") && Arrays.asList(DisFabric.config.adminsIds).contains(e.getAuthor().getId())) {
+        if (e.getAuthor() != e.getJDA().getSelfUser() && !e.getAuthor().isBot() && e.getChannel().getId().equals(DisFabric.config.channelId) && server != null) {
+            if (e.getMessage().getContentRaw().startsWith("!console") && Arrays.asList(DisFabric.config.adminsIds).contains(e.getAuthor().getId())) {
                 String command = e.getMessage().getContentRaw().replace("!console ", "");
                 server.getCommandManager().execute(getDiscordCommandSource(), command);
 
-            } else if(e.getMessage().getContentRaw().startsWith("!online")) {
+            } else if (e.getMessage().getContentRaw().startsWith("!online")) {
                 List<ServerPlayerEntity> onlinePlayers = server.getPlayerManager().getPlayerList();
                 StringBuilder playerList = new StringBuilder("```\n=============== Online Players (" + onlinePlayers.size() + ") ===============\n");
                 for (ServerPlayerEntity player : onlinePlayers) {
@@ -72,12 +72,12 @@ public class DiscordEventListener extends ListenerAdapter {
 
     }
 
-    public ServerCommandSource getDiscordCommandSource(){
+    public ServerCommandSource getDiscordCommandSource() {
         ServerWorld serverWorld = Objects.requireNonNull(getServer()).getOverworld();
         return new ServerCommandSource(new DiscordCommandOutput(), serverWorld == null ? Vec3d.ZERO : Vec3d.of(serverWorld.getSpawnPos()), Vec2f.ZERO, serverWorld, 4, "Discord", new LiteralText("Discord"), getServer(), null);
     }
 
-    private MinecraftServer getServer(){
+    private MinecraftServer getServer() {
         @SuppressWarnings("deprecation")
         Object gameInstance = FabricLoader.getInstance().getGameInstance();
         if (gameInstance instanceof MinecraftServer) {

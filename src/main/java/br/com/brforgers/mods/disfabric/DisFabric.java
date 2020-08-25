@@ -26,13 +26,14 @@ public class DisFabric implements DedicatedServerModInitializer {
     public static Configuration config;
     public static JDA jda;
     public static TextChannel textChannel;
+    private static boolean isServerStopping = false;
 
     @Override
     public void onInitializeServer() {
         AutoConfig.register(Configuration.class, JanksonConfigSerializer::new);
         config = AutoConfig.getConfigHolder(Configuration.class).getConfig();
         try {
-            if(config.membersIntents){
+            if (config.membersIntents){
                 DisFabric.jda = JDABuilder.createDefault(config.botToken)
                     .setMemberCachePolicy(MemberCachePolicy.ALL)
                     .enableIntents(GatewayIntent.GUILD_MEMBERS)
@@ -57,6 +58,7 @@ public class DisFabric implements DedicatedServerModInitializer {
                 jda.getPresence().setActivity(Activity.playing(config.botGameStatus));
             ServerLifecycleEvents.SERVER_STARTED.register((server) -> textChannel.sendMessage(DisFabric.config.texts.serverStarted).queue());
             ServerLifecycleEvents.SERVER_STOPPING.register((server) -> {
+                isServerStopping = true;
                 textChannel.sendMessage(DisFabric.config.texts.serverStopped).queue();
                 DisFabric.jda.shutdown();
             });
@@ -68,5 +70,9 @@ public class DisFabric implements DedicatedServerModInitializer {
                 ShrugCommand.register(dispatcher);
             }
         });
+    }
+
+    public static boolean isServerStopping() {
+        return isServerStopping;
     }
 }

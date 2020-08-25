@@ -14,7 +14,7 @@ public class MinecraftEventListener {
         ServerChatCallback.EVENT.register((playerEntity, rawMessage, message) -> {
 
             Pair<String, String> convertedPair = Utils.convertMentionsFromNames(rawMessage);
-            if(DisFabric.config.isWebhookEnabled) {
+            if (DisFabric.config.isWebhookEnabled && !DisFabric.isServerStopping()) {
                 JSONObject body = new JSONObject();
                 body.put("username", playerEntity.getEntityName());
                 body.put("avatar_url", "https://mc-heads.net/avatar/" + playerEntity.getEntityName());
@@ -24,7 +24,7 @@ public class MinecraftEventListener {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-            }else{
+            } else {
                 DisFabric.textChannel.sendMessage(DisFabric.config.texts.playerMessage.replace("%playername%", playerEntity.getEntityName()).replace("%playermessage%", convertedPair.getLeft())).queue();
             }
             JSONObject newComponent = new JSONObject(LiteralText.Serializer.toJson(message));
@@ -33,35 +33,35 @@ public class MinecraftEventListener {
         });
 
         PlayerAdvancementCallback.EVENT.register((playerEntity, advancement) -> {
-            if(DisFabric.config.announceAdvancements && advancement.getDisplay() != null && advancement.getDisplay().shouldAnnounceToChat() && playerEntity.getAdvancementTracker().getProgress(advancement).isDone()) {
-                switch(advancement.getDisplay().getFrame()){
+            if (DisFabric.config.announceAdvancements && advancement.getDisplay() != null && advancement.getDisplay().shouldAnnounceToChat() && playerEntity.getAdvancementTracker().getProgress(advancement).isDone() && !DisFabric.isServerStopping()) {
+                switch (advancement.getDisplay().getFrame()) {
                     case GOAL:
-                        DisFabric.textChannel.sendMessage(DisFabric.config.texts.advancementGoal.replace("%playername%", playerEntity.getEntityName()).replace("%advancement%",advancement.getDisplay().getTitle().getString())).queue();
+                        DisFabric.textChannel.sendMessage(DisFabric.config.texts.advancementGoal.replace("%playername%", playerEntity.getEntityName()).replace("%advancement%", advancement.getDisplay().getTitle().getString())).queue();
                         break;
                     case TASK:
-                        DisFabric.textChannel.sendMessage(DisFabric.config.texts.advancementTask.replace("%playername%", playerEntity.getEntityName()).replace("%advancement%",advancement.getDisplay().getTitle().getString())).queue();
+                        DisFabric.textChannel.sendMessage(DisFabric.config.texts.advancementTask.replace("%playername%", playerEntity.getEntityName()).replace("%advancement%", advancement.getDisplay().getTitle().getString())).queue();
                         break;
                     case CHALLENGE:
-                        DisFabric.textChannel.sendMessage(DisFabric.config.texts.advancementChallenge.replace("%playername%", playerEntity.getEntityName()).replace("%advancement%",advancement.getDisplay().getTitle().getString())).queue();
+                        DisFabric.textChannel.sendMessage(DisFabric.config.texts.advancementChallenge.replace("%playername%", playerEntity.getEntityName()).replace("%advancement%", advancement.getDisplay().getTitle().getString())).queue();
                         break;
                 }
             }
         });
 
         PlayerDeathCallback.EVENT.register((playerEntity, damageSource) -> {
-            if(DisFabric.config.announceDeaths){
+            if (DisFabric.config.announceDeaths && !DisFabric.isServerStopping()) {
                 DisFabric.textChannel.sendMessage(DisFabric.config.texts.deathMessage.replace("%deathmessage%",damageSource.getDeathMessage(playerEntity).getString()).replace("%playername%", playerEntity.getEntityName())).queue();
             }
         });
 
         PlayerJoinCallback.EVENT.register((connection, playerEntity) -> {
-            if(DisFabric.config.announcePlayers){
+            if (DisFabric.config.announcePlayers && !DisFabric.isServerStopping()) {
                 DisFabric.textChannel.sendMessage(DisFabric.config.texts.joinServer.replace("%playername%", playerEntity.getEntityName())).queue();
             }
         });
 
         PlayerLeaveCallback.EVENT.register((playerEntity) -> {
-            if(DisFabric.config.announcePlayers){
+            if (DisFabric.config.announcePlayers && !DisFabric.isServerStopping()) {
                 DisFabric.textChannel.sendMessage(DisFabric.config.texts.leftServer.replace("%playername%", playerEntity.getEntityName())).queue();
             }
         });

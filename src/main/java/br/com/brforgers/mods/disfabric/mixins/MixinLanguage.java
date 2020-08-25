@@ -6,7 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import net.fabricmc.loader.FabricLoader;
+import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.fabricmc.loader.launch.common.FabricLauncherBase;
 import net.fabricmc.loader.metadata.EntrypointMetadata;
@@ -51,7 +51,7 @@ public abstract class MixinLanguage {
 
         LOGGER.info("DisFabric will now try to load modded language files.");
         AtomicInteger loadedFiles = new AtomicInteger();
-        FabricLoader loader = FabricLoader.INSTANCE;
+        FabricLoader loader = FabricLoader.getInstance();
         loader.getAllMods().forEach(modContainer -> {
             ModMetadata metadata = modContainer.getMetadata();
             if(metadata instanceof LoaderModMetadata) {
@@ -69,7 +69,7 @@ public abstract class MixinLanguage {
                                 map.put(entry.getKey(), string);
                             }
                             loadedFiles.getAndIncrement();
-                            LOGGER.info("Successfully loaded /assets/"+modContainer.getMetadata().getId()+"/lang/en_us.json");
+                            LOGGER.info("Successfully loaded /assets/" + modContainer.getMetadata().getId() + "/lang/en_us.json");
                         } catch (Throwable var13) {
                             var3 = var13;
                             throw var13;
@@ -84,13 +84,13 @@ public abstract class MixinLanguage {
                                 inputStream.close();
                             }
                         }
-                    } catch (JsonParseException | IOException var15) {
-                        LOGGER.error("Couldn't read strings from /assets/"+modContainer.getMetadata().getId()+"/lang/en_us.json", var15);
+                    } catch (JsonParseException | IOException error) {
+                        LOGGER.error("Couldn't read strings from /assets/" + modContainer.getMetadata().getId()+"/lang/en_us.json", error);
                     } catch (ClassNotFoundException ignored) {}
                 }
             }
         });
-        LOGGER.info("DisFabric loaded "+loadedFiles.get()+" modded language files.");
+        LOGGER.info("DisFabric loaded " + loadedFiles.get() + " modded language files.");
 
         return (ImmutableMap<K, V>) ImmutableMap.builder().putAll(map).build();
     }
