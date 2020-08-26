@@ -8,7 +8,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MarkdownParser {
-
     public static String parseMarkdown(String message ) {
         String translated = message;
 
@@ -40,6 +39,4 @@ public class MarkdownParser {
         }
         return matches;
     }
-
-
 }

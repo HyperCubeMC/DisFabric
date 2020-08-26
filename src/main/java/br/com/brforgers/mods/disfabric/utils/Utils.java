@@ -11,9 +11,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Pair;
 
 public class Utils {
-
     public static Pair<String, String> convertMentionsFromNames(String message) {
-
         if (!message.contains("@")) return new Pair<>(message, message);
 
         List<String> messageList = Arrays.asList(message.split("@[\\S]+"));
@@ -27,7 +25,7 @@ public class Utils {
         Matcher matcher = pattern.matcher(message);
 
         int x = 0;
-        while(matcher.find()) {
+        while (matcher.find()) {
             Member member = null;
             for (Member m : DisFabric.textChannel.getMembers()) {
                 String name = matcher.group().substring(1);
@@ -44,7 +42,7 @@ public class Utils {
             }
             x++;
         }
-        if(x < messageList.size()) {
+        if (x < messageList.size()) {
             discordString.append(messageList.get(x));
             mcString.append(messageList.get(x));
         }

@@ -12,7 +12,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PlayerAdvancementTracker.class)
 public class MixinPlayerAdvancementTracker {
-
     @Shadow private ServerPlayerEntity owner;
 
     @Inject(method = "grantCriterion", at = @At("RETURN"))

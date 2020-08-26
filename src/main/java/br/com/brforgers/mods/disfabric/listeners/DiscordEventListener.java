@@ -6,6 +6,7 @@ import br.com.brforgers.mods.disfabric.utils.MarkdownParser;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.network.MessageType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -13,6 +14,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
@@ -23,7 +25,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class DiscordEventListener extends ListenerAdapter {
-
     public void onMessageReceived(@NotNull MessageReceivedEvent e) {
         MinecraftServer server = getServer();
         if (e.getAuthor() != e.getJDA().getSelfUser() && !e.getAuthor().isBot() && e.getChannel().getId().equals(DisFabric.config.channelId) && server != null) {
@@ -54,7 +55,7 @@ public class DiscordEventListener extends ListenerAdapter {
 //                tpss.append("```");
                 e.getChannel().sendMessage(tpss.toString()).queue();
 
-            } else if(e.getMessage().getContentRaw().startsWith("!help")){
+            } else if (e.getMessage().getContentRaw().startsWith("!help")){
                 String help = "```\n" + "=============== Commands ===============\n" +
                         "\n" + "!online: list server online players" +
                         "\n" + "!tps: shows loaded dimensions tps´s" +
@@ -66,7 +67,7 @@ public class DiscordEventListener extends ListenerAdapter {
                 discord.setStyle(discord.getStyle().withColor(TextColor.fromRgb(Objects.requireNonNull(e.getMember()).getColorRaw())));
                 LiteralText msg = new LiteralText(DisFabric.config.texts.colorlessText.replace("%discordname%", Objects.requireNonNull(e.getMember()).getEffectiveName()).replace("%message%", MarkdownParser.parseMarkdown(e.getMessage().getContentDisplay() + ((e.getMessage().getAttachments().size() > 0) ? " <att>" : "") + ((e.getMessage().getEmbeds().size() > 0) ? " <embed>" : ""))));
                 msg.setStyle(msg.getStyle().withColor(TextColor.fromFormatting(Formatting.WHITE)));
-                server.getPlayerManager().getPlayerList().forEach(serverPlayerEntity -> serverPlayerEntity.sendMessage(new LiteralText("").append(discord).append(msg),false));
+                server.getPlayerManager().broadcastChatMessage(new LiteralText("").append(discord).append(msg), MessageType.CHAT, Util.NIL_UUID);
             }
         }
 
@@ -82,7 +83,7 @@ public class DiscordEventListener extends ListenerAdapter {
         Object gameInstance = FabricLoader.getInstance().getGameInstance();
         if (gameInstance instanceof MinecraftServer) {
             return (MinecraftServer) gameInstance;
-        }else {
+        } else {
             return null;
         }
     }

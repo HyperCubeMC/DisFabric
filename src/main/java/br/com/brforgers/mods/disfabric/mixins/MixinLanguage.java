@@ -54,14 +54,14 @@ public abstract class MixinLanguage {
         FabricLoader loader = FabricLoader.getInstance();
         loader.getAllMods().forEach(modContainer -> {
             ModMetadata metadata = modContainer.getMetadata();
-            if(metadata instanceof LoaderModMetadata) {
+            if (metadata instanceof LoaderModMetadata) {
                 Optional<EntrypointMetadata> optional = ((LoaderModMetadata) metadata).getEntrypoints("main").stream().findFirst();
                 if(optional.isPresent()) {
                     EntrypointMetadata entrypointMetadata = optional.get();
                     try {
-                        InputStream inputStream = FabricLauncherBase.getClass(entrypointMetadata.getValue()).getResourceAsStream("/assets/"+modContainer.getMetadata().getId()+"/lang/en_us.json");
-                        if(inputStream == null) return;
-                        Throwable var3 = null;
+                        InputStream inputStream = FabricLauncherBase.getClass(entrypointMetadata.getValue()).getResourceAsStream("/assets/" + modContainer.getMetadata().getId() + "/lang/en_us.json");
+                        if (inputStream == null) return;
+                        Throwable throwable = null;
                         try {
                             JsonObject jsonObject = GSON.fromJson(new InputStreamReader(inputStream, StandardCharsets.UTF_8), JsonObject.class);
                             for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
@@ -70,22 +70,22 @@ public abstract class MixinLanguage {
                             }
                             loadedFiles.getAndIncrement();
                             LOGGER.info("Successfully loaded /assets/" + modContainer.getMetadata().getId() + "/lang/en_us.json");
-                        } catch (Throwable var13) {
-                            var3 = var13;
-                            throw var13;
+                        } catch (Throwable error) {
+                            throwable = error;
+                            throw error;
                         } finally {
-                            if (var3 != null) {
+                            if (throwable != null) {
                                 try {
                                     inputStream.close();
-                                } catch (Throwable var12) {
-                                    var3.addSuppressed(var12);
+                                } catch (Throwable error) {
+                                    throwable.addSuppressed(error);
                                 }
                             } else {
                                 inputStream.close();
                             }
                         }
                     } catch (JsonParseException | IOException error) {
-                        LOGGER.error("Couldn't read strings from /assets/" + modContainer.getMetadata().getId()+"/lang/en_us.json", error);
+                        LOGGER.error("Couldn't read strings from /assets/" + modContainer.getMetadata().getId() + "/lang/en_us.json", error);
                     } catch (ClassNotFoundException ignored) {}
                 }
             }

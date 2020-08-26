@@ -33,7 +33,7 @@ public class DisFabric implements DedicatedServerModInitializer {
         AutoConfig.register(Configuration.class, JanksonConfigSerializer::new);
         config = AutoConfig.getConfigHolder(Configuration.class).getConfig();
         try {
-            if (config.membersIntents){
+            if (config.membersIntents) {
                 DisFabric.jda = JDABuilder.createDefault(config.botToken)
                     .setMemberCachePolicy(MemberCachePolicy.ALL)
                     .enableIntents(GatewayIntent.GUILD_MEMBERS)
