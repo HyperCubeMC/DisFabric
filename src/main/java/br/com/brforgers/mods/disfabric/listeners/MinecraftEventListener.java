@@ -6,10 +6,8 @@ import br.com.brforgers.mods.disfabric.events.*;
 import br.com.brforgers.mods.disfabric.utils.MarkdownParser;
 import com.mashape.unirest.http.Unirest;
 import net.minecraft.text.LiteralText;
-import net.minecraft.text.MutableText;
 import net.minecraft.util.Pair;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class MinecraftEventListener {
@@ -19,8 +17,14 @@ public class MinecraftEventListener {
             if (!DisFabric.isServerStopping()) {
                 if (DisFabric.config.isWebhookEnabled) {
                     JSONObject body = new JSONObject();
+                    JSONObject allowedMentionsObject = new JSONObject();
+                    JSONArray allowedMentionsParseArray = new JSONArray();
+                    allowedMentionsParseArray.put("users");
+                    allowedMentionsParseArray.put("roles");
+                    allowedMentionsObject.put("parse", allowedMentionsParseArray);
                     body.put("username", playerEntity.getEntityName());
                     body.put("avatar_url", "https://mc-heads.net/avatar/" + playerEntity.getEntityName());
+                    body.put("allowed_mentions", allowedMentionsObject);
                     body.put("content", convertedPair.getLeft());
                     try {
                         Unirest.post(DisFabric.config.webhookURL).header("Content-Type", "application/json").body(body).asJsonAsync();
