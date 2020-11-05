@@ -1,7 +1,6 @@
 package br.com.brforgers.mods.disfabric.utils;
 
 import java.util.*;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
