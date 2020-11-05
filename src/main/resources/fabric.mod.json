@@ -25,8 +25,8 @@
     "disfabric.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.8.7",
+    "fabricloader": ">=10.0.6",
     "fabric": "*",
-    "minecraft": "1.16.x"
+    "minecraft": ">=1.16.4"
   }
 }
