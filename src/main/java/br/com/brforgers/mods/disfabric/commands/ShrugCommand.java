@@ -23,7 +23,7 @@ public class ShrugCommand {
                 }
         )));
         dispatcher.register(literal("shrug").executes(context -> {
-                    if(context.getSource() != null) {
+                    if (context.getSource() != null) {
                         ServerCommandSource source = context.getSource();
                         if (source.getPlayer() != null) {
                             source.getPlayer().networkHandler.onGameMessage(new ChatMessageC2SPacket("¯\\_(ツ)_/¯"));

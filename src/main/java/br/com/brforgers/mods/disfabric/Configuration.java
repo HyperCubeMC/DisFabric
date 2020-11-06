@@ -134,6 +134,10 @@ public class Configuration implements ConfigData {
                 "%message% | The message")
         @ConfigEntry.Category(value = "Texts")
         public String colorlessText = "<%discordname%> %message%";
+        
+        @Comment(value = "The text to show when the /discord command is run.")
+        @ConfigEntry.Category(value = "Texts")
+        public String discordCommandText = "Please inform the server admin that they need to change this in their DisFabric config.";
 
     }
 }

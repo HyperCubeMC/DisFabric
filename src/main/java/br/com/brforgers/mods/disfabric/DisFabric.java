@@ -1,6 +1,7 @@
 package br.com.brforgers.mods.disfabric;
 
 import br.com.brforgers.mods.disfabric.commands.ShrugCommand;
+import br.com.brforgers.mods.disfabric.commands.DiscordCommand;
 import br.com.brforgers.mods.disfabric.listeners.DiscordEventListener;
 import br.com.brforgers.mods.disfabric.listeners.MinecraftEventListener;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
@@ -53,8 +54,8 @@ public class DisFabric implements DedicatedServerModInitializer {
             jda = null;
             DisFabric.logger.error(ex);
         }
-        if(jda != null) {
-            if(!config.botGameStatus.isEmpty())
+        if (jda != null) {
+            if (!config.botGameStatus.isEmpty())
                 jda.getPresence().setActivity(Activity.playing(config.botGameStatus));
             ServerLifecycleEvents.SERVER_STARTED.register((server) -> textChannel.sendMessage(DisFabric.config.texts.serverStarted).queue());
             ServerLifecycleEvents.SERVER_STOPPING.register((server) -> {
@@ -68,6 +69,7 @@ public class DisFabric implements DedicatedServerModInitializer {
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
             if (dedicated) {
                 ShrugCommand.register(dispatcher);
+                DiscordCommand.register(dispatcher);
             }
         });
     }
