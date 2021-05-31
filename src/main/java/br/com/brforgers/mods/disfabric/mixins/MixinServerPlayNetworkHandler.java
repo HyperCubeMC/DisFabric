@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinServerPlayNetworkHandler {
     @Shadow public ServerPlayerEntity player;
 
-    @Inject(method = "onGameMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayNetworkHandler;method_31277(Ljava/lang/String;Ljava/util/function/Consumer;)V"), cancellable = true)
+    @Inject(method = "onGameMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayNetworkHandler;filterText(Ljava/lang/String;Ljava/util/function/Consumer;)V"), cancellable = true)
     private void onGameMessage(ChatMessageC2SPacket packet, CallbackInfo ci) {
         String string = StringUtils.normalizeSpace(packet.getChatMessage());
         Text text = new TranslatableText("chat.type.text", this.player.getDisplayName(), string);

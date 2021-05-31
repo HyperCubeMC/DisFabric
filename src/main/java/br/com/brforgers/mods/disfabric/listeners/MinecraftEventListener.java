@@ -43,15 +43,9 @@ public class MinecraftEventListener {
         PlayerAdvancementCallback.EVENT.register((playerEntity, advancement) -> {
             if (DisFabric.config.announceAdvancements && advancement.getDisplay() != null && advancement.getDisplay().shouldAnnounceToChat() && playerEntity.getAdvancementTracker().getProgress(advancement).isDone() && !DisFabric.isServerStopping()) {
                 switch (advancement.getDisplay().getFrame()) {
-                    case GOAL:
-                        DisFabric.textChannel.sendMessage(DisFabric.config.texts.advancementGoal.replace("%playername%", playerEntity.getEntityName()).replace("%advancement%", advancement.getDisplay().getTitle().getString())).queue();
-                        break;
-                    case TASK:
-                        DisFabric.textChannel.sendMessage(DisFabric.config.texts.advancementTask.replace("%playername%", playerEntity.getEntityName()).replace("%advancement%", advancement.getDisplay().getTitle().getString())).queue();
-                        break;
-                    case CHALLENGE:
-                        DisFabric.textChannel.sendMessage(DisFabric.config.texts.advancementChallenge.replace("%playername%", playerEntity.getEntityName()).replace("%advancement%", advancement.getDisplay().getTitle().getString())).queue();
-                        break;
+                    case GOAL -> DisFabric.textChannel.sendMessage(DisFabric.config.texts.advancementGoal.replace("%playername%", playerEntity.getEntityName()).replace("%advancement%", advancement.getDisplay().getTitle().getString())).queue();
+                    case TASK -> DisFabric.textChannel.sendMessage(DisFabric.config.texts.advancementTask.replace("%playername%", playerEntity.getEntityName()).replace("%advancement%", advancement.getDisplay().getTitle().getString())).queue();
+                    case CHALLENGE -> DisFabric.textChannel.sendMessage(DisFabric.config.texts.advancementChallenge.replace("%playername%", playerEntity.getEntityName()).replace("%advancement%", advancement.getDisplay().getTitle().getString())).queue();
                 }
             }
         });
